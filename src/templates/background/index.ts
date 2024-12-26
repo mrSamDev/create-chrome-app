@@ -1,13 +1,14 @@
 export function createBackgroundTemplate(): string {
   return `
 chrome.runtime.onInstalled.addListener(() => {
- console.log('Extension installed');
+  console.log("Extension installed");
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
- if (message.type === 'GET_DATA') {
-   sendResponse({ data: 'Response from background script' });
- }
-  
+  if (message.type === "GET_DATA") {
+    sendResponse({ data: "Response from background script" });
+  }
+});
+
   `;
 }

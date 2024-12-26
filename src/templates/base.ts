@@ -10,6 +10,8 @@ import { createPopupTemplate } from "./popup";
 import { createOptionsTemplate } from "./options";
 import { createBackgroundTemplate } from "./background";
 import { createContentTemplate } from "./content";
+import { createGenerateManifest } from "./manifest";
+import { createIcons } from "./icons";
 
 export async function createExtension(config: ExtensionConfig) {
   const projectPath = path.join(process.cwd(), config.name);
@@ -29,6 +31,8 @@ export async function createExtension(config: ExtensionConfig) {
     generateWebpackConfig(projectPath, config);
     generateTsConfig(projectPath);
     createHtmlTemplate(projectPath, config);
+    createIcons(projectPath);
+    createGenerateManifest(projectPath, config);
     generateSourceFiles(projectPath, config);
     generateMainFiles(projectPath, config);
 
@@ -131,9 +135,11 @@ function getDevDependencies(config: ExtensionConfig): string[] {
     "webpack",
     "webpack-cli",
     "ts-loader",
-    "@types/chrome",
     "html-webpack-plugin",
     "copy-webpack-plugin",
+    "css-loader",
+    "style-loader",
+    "@types/chrome",
     ...(config.useReact ? ["@types/react", "@types/react-dom"] : []),
     ...(config.useTailwind ? ["tailwindcss", "postcss", "postcss-loader", "autoprefixer"] : []),
   ];

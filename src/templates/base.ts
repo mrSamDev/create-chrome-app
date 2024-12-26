@@ -1,10 +1,10 @@
-import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import { createDirectory, writeFile, installDependencies } from "../utils/file";
 import { ExtensionConfig } from "../config/default";
 import { createReactTemplate } from "./react";
 import { createVanillaTemplate } from "./vanilla";
+import { generateWebpackTemplate } from "./webpack";
 
 export async function createExtension(config: ExtensionConfig) {
   const projectPath = path.join(process.cwd(), config.name);
@@ -152,10 +152,4 @@ function logSuccess(name: string): void {
 
 function logError(error: any): void {
   console.error(chalk.red("Error creating extension:"), error);
-}
-
-function generateWebpackTemplate(config: ExtensionConfig): string {
-  // Implementation of webpack config generation
-  // (Previously defined webpack configuration)
-  return `/* webpack configuration */`;
 }

@@ -1,4 +1,4 @@
-import { input, select, confirm } from "@inquirer/prompts";
+import { input, select, checkbox, confirm } from "@inquirer/prompts";
 import { validateProjectName } from "./validation";
 import { ExtensionConfig, defaultPermissions } from "../config/default";
 
@@ -12,14 +12,21 @@ export async function promptUser(): Promise<ExtensionConfig> {
     message: "Enter a description:",
   });
 
-  const permissions = await select({
+  const permissions = await checkbox({
     message: "Select required permissions:",
     choices: defaultPermissions.map((p) => ({ value: p, label: p })),
-    loop: true,
-    default: defaultPermissions[0],
   });
 
-  console.log("permissions: ", permissions);
+  const packageManager: "npm" | "pnpm" = await select({
+    message: "Select package manager:",
+    choices: [
+      //@ts-ignore
+      { value: "npm", label: "npm" },
+      //@ts-ignore
+      { value: "pnpm", label: "pnpm" },
+    ],
+    default: "npm",
+  });
 
   const useReact = await confirm({
     message: "Would you like to use React?",
@@ -29,5 +36,5 @@ export async function promptUser(): Promise<ExtensionConfig> {
     message: "Would you like to use Tailwind CSS?",
   });
 
-  return { name, description, permissions, useReact, useTailwind };
+  return { name, description, packageManager, permissions, useReact, useTailwind };
 }

@@ -1,6 +1,6 @@
 import { ExtensionConfig } from "../../config/default";
 
-export function generateWebpackConfig(config: ExtensionConfig): string {
+export function generateWebpackTemplate(config: ExtensionConfig): string {
   return `
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');

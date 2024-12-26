@@ -1,9 +1,10 @@
 export interface ExtensionConfig {
   name: string;
   description: string;
-  permissions: string;
+  permissions: string[];
   useReact: boolean;
   useTailwind: boolean;
+  packageManager: "npm" | "pnpm";
 }
 
 export const defaultPermissions = ["activeTab", "storage", "notifications"];

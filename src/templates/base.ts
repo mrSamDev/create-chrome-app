@@ -132,6 +132,8 @@ function getDevDependencies(config: ExtensionConfig): string[] {
     "webpack-cli",
     "ts-loader",
     "@types/chrome",
+    "html-webpack-plugin",
+    "copy-webpack-plugin",
     ...(config.useReact ? ["@types/react", "@types/react-dom"] : []),
     ...(config.useTailwind ? ["tailwindcss", "postcss", "postcss-loader", "autoprefixer"] : []),
   ];

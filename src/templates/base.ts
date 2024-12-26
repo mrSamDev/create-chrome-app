@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import { createDirectory, writeFile, installDependencies } from "../utils/file";
@@ -12,6 +13,7 @@ import { createBackgroundTemplate } from "./background";
 import { createContentTemplate } from "./content";
 import { createGenerateManifest } from "./manifest";
 import { createIcons } from "./icons";
+import generateStyles from "./styles";
 
 export async function createExtension(config: ExtensionConfig) {
   const projectPath = path.join(process.cwd(), config.name);
@@ -35,6 +37,7 @@ export async function createExtension(config: ExtensionConfig) {
     createGenerateManifest(projectPath, config);
     generateSourceFiles(projectPath, config);
     generateMainFiles(projectPath, config);
+    generateStyles(projectPath, config);
 
     // Setup dependencies
     process.chdir(projectPath);
@@ -114,6 +117,10 @@ function setupPackageJson(config: ExtensionConfig): void {
 function installProjectDependencies(config: ExtensionConfig): void {
   const dependencies = getDependencies(config);
   const devDependencies = getDevDependencies(config);
+
+  if (!fs.existsSync(process.cwd())) {
+    throw new Error("Project directory not found");
+  }
 
   const pm = config.packageManager;
 

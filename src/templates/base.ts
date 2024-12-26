@@ -5,23 +5,32 @@ import { ExtensionConfig } from "../config/default";
 import { createReactTemplate } from "./react";
 import { createVanillaTemplate } from "./vanilla";
 import { generateWebpackTemplate } from "./webpack";
+import { createHtmlTemplate } from "./html";
+import { createPopupTemplate } from "./popup";
+import { createOptionsTemplate } from "./options";
+import { createBackgroundTemplate } from "./background";
+import { createContentTemplate } from "./content";
 
 export async function createExtension(config: ExtensionConfig) {
   const projectPath = path.join(process.cwd(), config.name);
 
   try {
-    // Create project structure
+    // Create directories
     createDirectory(projectPath);
-    createDirectory(path.join(projectPath, "src"));
-    createDirectory(path.join(projectPath, "public"));
+    createDirectory(path.join(projectPath, "src/pages/popup"));
+    createDirectory(path.join(projectPath, "src/pages/options"));
+    createDirectory(path.join(projectPath, "src/background"));
+    createDirectory(path.join(projectPath, "src/content-scripts"));
     createDirectory(path.join(projectPath, "src/styles"));
+    createDirectory(path.join(projectPath, "public/assets"));
 
     // Generate files based on template
     generateManifest(projectPath, config);
     generateWebpackConfig(projectPath, config);
     generateTsConfig(projectPath);
-    generateHtmlFiles(projectPath, config);
+    createHtmlTemplate(projectPath, config);
     generateSourceFiles(projectPath, config);
+    generateMainFiles(projectPath, config);
 
     // Setup dependencies
     process.chdir(projectPath);
@@ -78,22 +87,6 @@ function generateTsConfig(projectPath: string): void {
   writeFile(path.join(projectPath, "tsconfig.json"), JSON.stringify(tsConfig, null, 2));
 }
 
-function generateHtmlFiles(projectPath: string, config: ExtensionConfig): void {
-  const popupHtml = `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>${config.name}</title>
-    ${config.useTailwind ? '<link href="./styles/tailwind.css" rel="stylesheet">' : ""}
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>`;
-
-  writeFile(path.join(projectPath, "public/popup.html"), popupHtml);
-}
-
 function generateSourceFiles(projectPath: string, config: ExtensionConfig): void {
   const template = config.useReact ? createReactTemplate(config) : createVanillaTemplate(config);
   const extension = config.useReact ? "tsx" : "ts";
@@ -118,11 +111,13 @@ function installProjectDependencies(config: ExtensionConfig): void {
   const dependencies = getDependencies(config);
   const devDependencies = getDevDependencies(config);
 
+  const pm = config.packageManager;
+
   if (dependencies.length) {
-    installDependencies(dependencies);
+    installDependencies(dependencies, false, pm);
   }
   if (devDependencies.length) {
-    installDependencies(devDependencies, true);
+    installDependencies(devDependencies, true, pm);
   }
 }
 
@@ -140,6 +135,15 @@ function getDevDependencies(config: ExtensionConfig): string[] {
     ...(config.useReact ? ["@types/react", "@types/react-dom"] : []),
     ...(config.useTailwind ? ["tailwindcss", "postcss", "postcss-loader", "autoprefixer"] : []),
   ];
+}
+
+function generateMainFiles(projectPath: string, config: ExtensionConfig): void {
+  const ext = config.useReact ? "tsx" : "ts";
+
+  writeFile(path.join(projectPath, `src/pages/popup/index.${ext}`), createPopupTemplate(config));
+  writeFile(path.join(projectPath, `src/pages/options/index.${ext}`), createOptionsTemplate(config));
+  writeFile(path.join(projectPath, `src/background/index.ts`), createBackgroundTemplate());
+  writeFile(path.join(projectPath, `src/content-scripts/index.ts`), createContentTemplate());
 }
 
 function logSuccess(name: string): void {

@@ -4,8 +4,7 @@ export function createOptionsTemplate(config: ExtensionConfig): string {
   if (config.useReact) {
     return `
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-${config.useTailwind ? "import './styles/tailwind.css';" : ""}
+${config.useTailwind ? "import '../../styles/tailwind.css';" : ""}
 
 const Options = () => {
  return (

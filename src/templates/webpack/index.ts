@@ -8,6 +8,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 ${config.useTailwind ? "const tailwindcss = require('tailwindcss');" : ""}
 
 module.exports = {
+  mode: 'development',
   entry: {
     popup: './src/pages/popup/index.tsx',
     options: './src/pages/options/index.tsx',
@@ -17,6 +18,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
+    clean: true
   },
   module: {
     rules: [
@@ -37,6 +39,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
+  },
+  optimization: {
+    splitChunks: {
+      chunks: chunk => chunk.name !== 'content'
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

@@ -4,8 +4,7 @@ export function createPopupTemplate(config: ExtensionConfig): string {
   if (config.useReact) {
     return `
   import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-${config.useTailwind ? "import './styles/tailwind.css';" : ""}
+${config.useTailwind ? "import '../../styles/tailwind.css';" : ""}
 
 const Popup = () => {
  const [count, setCount] = useState(0);

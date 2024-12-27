@@ -1,3 +1,5 @@
+🚗 Work in Progress
+
 # Create Chrome Extension CLI
 
 A modern CLI tool for scaffolding Chrome extensions with TypeScript, React, and Tailwind CSS support.
